@@ -1,0 +1,50 @@
+//tek satır yorum
+
+/*
+birden çok satır yorum
+*/
+FUNCTION_BLOCK model
+
+VAR_INPUT
+    servis : REAL;
+    yemek : REAL;
+END_VAR
+
+VAR_OUTPUT
+    tur : REAL;
+END_VAR
+
+//Bu kısım bulanıklaştırma ksımıdır
+FUZZIFY servis
+    TERM kotu := (0,1) (4,0);
+    TERM iyi := (1,0) (4, 1) (6, 1) (9, 0);
+    TERM mukemmel := (6, 0) (9, 1);
+END_FUZZIFY
+
+FUZZIFY yemek
+    TERM kotu := (0,0) (3, 1) (6, 0);
+    TERM lezzetli := (4, 0) (9, 1);
+END_FUZZIFY
+
+// Durulama
+
+DEFUZZIFY tur
+    TERM ucuz := (0,0 ) (20, 1) (50, 0);
+    TERM orta := (40, 0) (60, 1) (80, 0);
+    TERM iyi := (70, 0) (85, 1) (100, 0);
+    METHOD : COG;
+    DEFAULT := 0;
+END_DEFUZZIFY
+
+//MANDANİ MODEL KURALLAR
+RULEBLOCK kurallarblok1
+    AND : MIN;
+    ACT : MIN;
+    ACCU : MAX;
+    
+    RULE 1 : IF servis IS kotu OR yemek IS kotu THEN tur IS ucuz;
+    RULE 2 : IF servis IS iyi THEN tur IS orta;
+    RULE 3 : IF servis IS mukemmel AND yemek IS lezzetli THEN tur is iyi;
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK

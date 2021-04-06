@@ -1,0 +1,35 @@
+FUNCTION_BLOCK CamasirMakinesi
+    VAR_INPUT
+        kirlilik_yuzde : REAL;
+        camasir_tur : REAL;
+    END_VAR
+
+    VAR_OUTPUT
+        yikama_suresi : REAL;
+    END_VAR
+
+    FUZZIFY kirlilik_yuzde
+        TERM az := (0, 1) (50, 0);
+        TERM orta := trian 0 50 90;
+        TERM fazla := trape 60 80 100 100;
+    END_FUZZIFY
+
+    FUZZIFY camasir_tur
+        TERM az := (0, 1) (50, 0);
+        TERM orta := trian 0 50 90;
+        TERM fazla := trape 60 80 100 100;
+    END_FUZZIFY
+
+    DEFUZZIFY yikama_suresi
+        RULE 1: IF kirlilik_yuzde IS az AND camasir_tur IS narin THEN yikama_suresi IS cok_kisa;
+        RULE 2: IF kirlilik_yuzde IS az AND camasir_tur IS karisik THEN yikama_suresi IS kisa;
+        RULE 3: IF kirlilik_yuzde IS az AND camasir_tur IS beyaz THEN yikama_suresi IS normal;
+        RULE 4: IF kirlilik_yuzde IS orta AND camasir_tur IS narin THEN yikama_suresi IS kisa;
+        RULE 5: IF kirlilik_yuzde IS orta AND camasir_tur IS karisik THEN yikama_suresi IS normal;
+        RULE 6: IF kirlilik_yuzde IS orta AND camasir_tur IS beyaz THEN yikama_suresi IS uzun;
+        RULE 7: IF kirlilik_yuzde IS fazla AND camasir_tur IS narin THEN yikama_suresi IS normal;
+        RULE 8: IF kirlilik_yuzde IS fazla AND camasir_tur IS karisik THEN yikama_suresi IS uzun;
+        RULE 9: IF kirlilik_yuzde IS fazla AND camasir_tur IS beyaz THEN yikama_suresi IS cok_uzun;
+    END_DEFUZZIFY
+
+END_FUNCTION_BLOCK
